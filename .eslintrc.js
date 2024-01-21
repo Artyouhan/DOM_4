@@ -1,32 +1,23 @@
-module.exports = {
+{
+    "plugins": ["prettier"],
+    "extends": ["eslint:recommended", "plugin:prettier/recommended"],
     "env": {
-        "browser": true,
-        "commonjs": true,
-        "es2021": true
+      "es6": true,
+      "browser": true,
+      "jest/globals": true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-    ],
-    "overrides": [
-        {
-            "env": {
-                "node": true
-            },
-            "files": [
-                ".eslintrc.{js,cjs}"
-            ],
-            "parserOptions": {
-                "sourceType": "script"
-            }
-        }
-    ],
     "parserOptions": {
-        "ecmaVersion": "latest"
+      "sourceType": "module"
     },
-    "plugins": [
-        "react"
-    ],
     "rules": {
-    }
-}
+      "no-unused-vars": "warn"
+    },
+    "overrides": [
+      {
+        "files": ["**/*.test.js"],
+        "plugins": ["jest"],
+        "extends": ["plugin:jest/recommended"],
+        "rules": { "jest/prefer-expect-assertions": "off" }
+      }
+    ]
+  }
