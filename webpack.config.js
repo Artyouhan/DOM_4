@@ -1,35 +1,54 @@
-const path = require('path'); // Импортируем модуль "path" для работы с путями файлов
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  entry: './src/index.js', // Точка входа для сборки проекта
-
+  target: 'web',
+  devtool: 'inline-source-map',
   output: {
-    filename: 'bundle.js', // Имя выходного файла сборки
-    path: path.resolve(__dirname, 'dist'), // Путь для выходного файла сборки
+    path: path.resolve(__dirname, 'dist'),
   },
-
+  devServer: {
+    historyApiFallback: true,
+    contentBase: path.resolve(__dirname, '/dist'),
+    open: true,
+    compress: true,
+  },
   module: {
     rules: [
       {
-        test: /\.css$/, // Регулярное выражение для обработки файлов с расширением .css
-        use: ['style-loader', 'css-loader'], // Загрузчики, используемые для обработки CSS-файлов
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader, 'css-loader',
+        ],
       },
     ],
   },
-  
   plugins: [
-    new HtmlWebpackPlugin({
+    new HtmlWebPackPlugin({
       template: './src/index.html',
+      filename: './index.html',
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
-
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'), // Каталог для статики
-    },
-    open: true, // Автоматически открывать браузер
-  },
-
-  mode: 'development', // Режим сборки
 };
